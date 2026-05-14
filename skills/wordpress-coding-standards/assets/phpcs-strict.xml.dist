@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Plugin Coding Standards (Strict)">
+    <description>
+        Strict WPCS ruleset for client work, agency projects, and code destined for
+        security review. Extends the standard plugin ruleset with VIP-style hardening:
+        strict comparisons, discouraged-function flagging, and stricter performance checks.
+        Customize text_domain, prefixes, and versions before committing.
+    </description>
+
+    <!-- ============================== Files & arguments ============================ -->
+
+    <file>.</file>
+
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+    <exclude-pattern>/build/*</exclude-pattern>
+    <exclude-pattern>/dist/*</exclude-pattern>
+    <exclude-pattern>/tests/fixtures/*</exclude-pattern>
+    <exclude-pattern>*.min.*</exclude-pattern>
+    <exclude-pattern>*-asset.php</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg value="psv"/>
+    <arg name="colors"/>
+    <arg name="parallel" value="8"/>
+    <arg name="cache" value=".phpcs.cache"/>
+
+    <!-- Treat warnings as errors. Forces engagement with every issue rather than ignoring warnings. -->
+    <arg name="warning-severity" value="0"/>
+    <!--
+        Setting warning-severity to 0 (above) suppresses warning output entirely.
+        To instead treat warnings as errors (so CI fails on warnings), comment out
+        the warning-severity arg above and run PHPCS with these flags:
+
+            vendor/bin/phpcs (dash-dash)severity=1 (dash-dash)warning-severity=1
+
+        Replace "(dash-dash)" with two literal hyphens. Two consecutive hyphens
+        cannot appear inside an XML comment, which is why we render them this way.
+    -->
+
+    <!-- ============================== Standards ===================================== -->
+
+    <!-- Full WordPress standard. -->
+    <rule ref="WordPress"/>
+
+    <!-- Stricter VIP-style rules. -->
+    <rule ref="WordPress-VIP-Go" >
+        <!--
+            VIP-Go includes some rules tuned for the WordPress.com VIP hosting platform
+            (cron limitations, file write restrictions, etc.) that won't apply to
+            self-hosted sites. Uncomment to exclude:
+        -->
+        <!-- <exclude name="WordPressVIPMinimum.Functions.RestrictedFunctions"/> -->
+    </rule>
+
+    <!-- ============================== Strict additions ============================== -->
+
+    <!-- Require strict comparison in in_array, array_search, array_keys. -->
+    <rule ref="WordPress.PHP.StrictInArray">
+        <properties>
+            <property name="error" value="true"/>
+        </properties>
+    </rule>
+
+    <!-- Require strict comparison in conditions (=== and !==). -->
+    <rule ref="WordPress.PHP.StrictComparisons"/>
+
+    <!-- Flag use of discouraged WordPress functions (query_posts, the_excerpt, etc.). -->
+    <rule ref="WordPress.WP.DiscouragedFunctions"/>
+
+    <!-- Flag use of discouraged PHP constants (e.g., FILTER_SANITIZE_STRING removed in PHP 8.1). -->
+    <rule ref="WordPress.WP.DiscouragedConstants"/>
+
+    <!-- Flag deprecated WordPress parameters in function calls. -->
+    <rule ref="WordPress.WP.DeprecatedParameters"/>
+    <rule ref="WordPress.WP.DeprecatedClasses"/>
+    <rule ref="WordPress.WP.DeprecatedFunctions"/>
+
+    <!-- Require capability checks before privileged actions. -->
+    <rule ref="WordPress.WP.Capabilities"/>
+
+    <!-- ============================== Project-specific configuration ================ -->
+
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="your-plugin-slug"/>
+            </property>
+        </properties>
+    </rule>
+
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="your_plugin"/>
+                <element value="Your_Plugin"/>
+                <element value="YOUR_PLUGIN"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- ============================== Version compatibility ========================= -->
+
+    <config name="minimum_wp_version" value="6.2"/>
+    <config name="testVersion" value="7.4-"/>
+    <rule ref="PHPCompatibilityWP"/>
+
+</ruleset>

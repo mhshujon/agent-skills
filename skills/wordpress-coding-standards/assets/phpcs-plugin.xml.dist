@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Plugin Coding Standards">
+    <description>
+        Standard WPCS ruleset for WordPress plugin development.
+        Customize the text_domain, prefixes, minimum_wp_version, and testVersion values
+        for your specific plugin before committing.
+    </description>
+
+    <!-- ============================== Files & arguments ============================ -->
+
+    <!-- What to scan. Run from the project root by default. -->
+    <file>.</file>
+
+    <!-- What to skip. -->
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+    <exclude-pattern>/build/*</exclude-pattern>
+    <exclude-pattern>/dist/*</exclude-pattern>
+    <exclude-pattern>/tests/fixtures/*</exclude-pattern>
+    <exclude-pattern>*.min.*</exclude-pattern>
+    <exclude-pattern>*-asset.php</exclude-pattern>
+
+    <!-- Only PHP files. -->
+    <arg name="extensions" value="php"/>
+
+    <!-- Show progress, summary, and source codes for each violation. -->
+    <arg value="psv"/>
+
+    <!-- Colored output. -->
+    <arg name="colors"/>
+
+    <!-- Parallel processing. Tune to your CPU count. -->
+    <arg name="parallel" value="8"/>
+
+    <!-- Cache results between runs. Add .phpcs.cache to .gitignore. -->
+    <arg name="cache" value=".phpcs.cache"/>
+
+    <!-- ============================== Standards ===================================== -->
+
+    <!-- The full WordPress standard: Core + Extra + Docs + VIP-Go. -->
+    <rule ref="WordPress">
+        <!--
+            Uncomment any of these excludes if they don't fit your project.
+            Each is a real trade-off; only suppress what's actually unworkable.
+        -->
+
+        <!-- If you use a PSR-4 autoloader instead of class-foo-bar.php naming: -->
+        <!-- <exclude name="WordPress.Files.FileName"/> -->
+
+        <!-- If you intentionally use short array syntax everywhere (WPCS 3+ allows it): -->
+        <!-- <exclude name="Universal.Arrays.DisallowShortArraySyntax"/> -->
+    </rule>
+
+    <!-- ============================== Project-specific configuration ================ -->
+
+    <!--
+        Text domain for the i18n sniff. MUST match the plugin's Text Domain header.
+        Replace the placeholder with your plugin slug.
+    -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="your-plugin-slug"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!--
+        Prefixes for global functions, classes, constants, and hooks.
+        Replace all three with your plugin's prefix in each case.
+    -->
+    <rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+        <properties>
+            <property name="prefixes" type="array">
+                <element value="your_plugin"/>
+                <element value="Your_Plugin"/>
+                <element value="YOUR_PLUGIN"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- ============================== Version compatibility ========================= -->
+
+    <!-- Minimum supported WordPress version. Drives deprecated-function checks. -->
+    <config name="minimum_wp_version" value="6.2"/>
+
+    <!-- PHP versions to check compatibility against. "7.4-" means "7.4 and up". -->
+    <config name="testVersion" value="7.4-"/>
+    <rule ref="PHPCompatibilityWP"/>
+
+</ruleset>

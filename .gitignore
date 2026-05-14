@@ -1,0 +1,37 @@
+# Built skill packages — generate with: python scripts/package.py
+*.skill
+*.zip
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.env
+venv/
+env/
+
+# PHPCS cache
+.phpcs.cache
+
+# Composer
+vendor/
+composer.lock
+
+# Node (if JS build tools are added)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# OS
+Thumbs.db
+.DS_Store
+
+*.skill

@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Plugin Coding Standards (Lenient — Migration)">
+    <description>
+        Lenient WPCS ruleset for bolting WordPress Coding Standards onto a legacy
+        codebase. Enforces security and i18n strictly (the things that matter for
+        correctness and safety), but relaxes pure-style rules (file naming, alignment,
+        long array syntax, brace placement quirks) that would produce thousands of
+        violations in pre-existing code.
+
+        Use as a starting point. Periodically remove excludes as you clean up code,
+        and migrate to phpcs-plugin.xml.dist once the codebase is mostly compliant.
+    </description>
+
+    <!-- ============================== Files & arguments ============================ -->
+
+    <file>.</file>
+
+    <exclude-pattern>/vendor/*</exclude-pattern>
+    <exclude-pattern>/node_modules/*</exclude-pattern>
+    <exclude-pattern>/build/*</exclude-pattern>
+    <exclude-pattern>/dist/*</exclude-pattern>
+    <exclude-pattern>/tests/fixtures/*</exclude-pattern>
+    <exclude-pattern>*.min.*</exclude-pattern>
+    <exclude-pattern>*-asset.php</exclude-pattern>
+
+    <arg name="extensions" value="php"/>
+    <arg value="psv"/>
+    <arg name="colors"/>
+    <arg name="parallel" value="8"/>
+    <arg name="cache" value=".phpcs.cache"/>
+
+    <!-- ============================== Standards ===================================== -->
+
+    <rule ref="WordPress">
+        <!-- ===================== Pure-style rules (relaxed) ===================== -->
+
+        <!--
+            File naming: class-foo-bar.php style. Often not followed by legacy code,
+            especially PSR-4-style codebases. Skip until you can rename systematically.
+        -->
+        <exclude name="WordPress.Files.FileName"/>
+
+        <!--
+            Array spacing/alignment: very fiddly, low signal-to-noise on legacy code.
+        -->
+        <exclude name="WordPress.Arrays.ArrayDeclarationSpacing"/>
+        <exclude name="WordPress.Arrays.ArrayIndentation"/>
+        <exclude name="WordPress.Arrays.MultipleStatementAlignment"/>
+
+        <!-- Long array syntax preference (WPCS 3+ already allows short, but some legacy projects mix). -->
+        <exclude name="Universal.Arrays.DisallowShortArraySyntax"/>
+
+        <!--
+            Yoda conditions: a real signal for new code, but rewriting hundreds of
+            existing conditions creates massive diffs with no functional benefit.
+            Re-enable once you've adopted it as a team convention.
+        -->
+        <exclude name="WordPress.PHP.YodaConditions"/>
+
+        <!-- Function comment formatting. Add docblocks gradually; don't gate on this in legacy. -->
+        <exclude name="Squiz.Commenting.FunctionComment"/>
+        <exclude name="Squiz.Commenting.FunctionCommentThrowTag"/>
+        <exclude name="Squiz.Commenting.VariableComment"/>
+        <exclude name="Squiz.Commenting.ClassComment"/>
+        <exclude name="Squiz.Commenting.FileComment"/>
+        <exclude name="Squiz.Commenting.InlineComment"/>
+
+        <!-- Prefix-all-globals: noisy on legacy plugins with unprefixed helpers. Enable later. -->
+        <exclude name="WordPress.NamingConventions.PrefixAllGlobals"/>
+
+        <!-- Valid variable name: legacy may have camelCase from copy-pasted JS examples. -->
+        <exclude name="WordPress.NamingConventions.ValidVariableName"/>
+
+        <!-- Brace and whitespace pedantry. -->
+        <exclude name="Generic.WhiteSpace.ScopeIndent"/>
+        <exclude name="PEAR.Functions.FunctionCallSignature"/>
+        <exclude name="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+    </rule>
+
+    <!-- ============================== Security rules (STRICT) ====================== -->
+
+    <!--
+        Security violations are functional bugs, not style issues. Do NOT exclude
+        these even in legacy code — fix the violations.
+    -->
+    <rule ref="WordPress.Security"/>
+    <rule ref="WordPress.DB.PreparedSQL"/>
+    <rule ref="WordPress.DB.PreparedSQLPlaceholders"/>
+    <rule ref="WordPress.DB.DirectDatabaseQuery"/>
+    <rule ref="WordPress.DB.SlowDBQuery"/>
+
+    <!-- ============================== i18n rules (STRICT) =========================== -->
+
+    <!-- Translation issues break the plugin for non-English users. Always enforce. -->
+    <rule ref="WordPress.WP.I18n">
+        <properties>
+            <property name="text_domain" type="array">
+                <element value="your-plugin-slug"/>
+            </property>
+        </properties>
+    </rule>
+
+    <!-- ============================== Version compatibility ========================= -->
+
+    <config name="minimum_wp_version" value="6.0"/>
+    <config name="testVersion" value="7.4-"/>
+    <rule ref="PHPCompatibilityWP"/>
+
+    <!-- ============================== Migration progression ========================= -->
+
+    <!--
+        How to ratchet from lenient to strict:
+
+        1. Get the build green with this ruleset.
+        2. Re-enable WordPress.NamingConventions.ValidVariableName, fix violations.
+        3. Re-enable WordPress.Arrays.* one at a time, fix violations.
+        4. Re-enable Squiz.Commenting.* one at a time, add missing docblocks.
+        5. Re-enable WordPress.PHP.YodaConditions, fix conditions.
+        6. Re-enable WordPress.NamingConventions.PrefixAllGlobals — biggest lift, last.
+        7. Re-enable WordPress.Files.FileName, rename files.
+        8. Switch ruleset to phpcs-plugin.xml.dist or phpcs-strict.xml.dist.
+
+        Each step is its own commit/PR. Don't ratchet everything at once or you'll
+        produce an unreviewable diff.
+    -->
+
+</ruleset>
