@@ -184,9 +184,13 @@ Open a GitHub issue with:
 
 1. **What the skill does** — paste the exact Claude response that was wrong
 2. **What it should do** — describe the correct behaviour
-3. **The reference** — link to the relevant spec, standard, or documentation if you have it
+3. **The reference** — link to the relevant rule in the [WordPress Coding Standards repo](https://github.com/WordPress/WordPress-Coding-Standards) or the [WordPress Coding Standards handbook](https://developer.wordpress.org/coding-standards/) if you have it
 
 ---
+
+## Acknowledgements
+
+The `wordpress-coding-standards` skill is based on the rules and sniffs maintained by the WordPress community in the [WordPress Coding Standards](https://github.com/WordPress/WordPress-Coding-Standards) repository. When updating rules or examples, always verify against that repo to ensure accuracy.
 
 ## Maintainer notes
 

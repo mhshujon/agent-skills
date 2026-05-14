@@ -8,7 +8,7 @@ A collection of Claude AI skills — each one teaches Claude a focused domain of
 
 | Skill | Description |
 |---|---|
-| [`wordpress-coding-standards`](skills/wordpress-coding-standards/) | Enforces WordPress Coding Standards (WPCS) when writing, reviewing, or refactoring WordPress PHP — plugins, themes, blocks, and anything in `wp-content/` |
+| [`wordpress-coding-standards`](skills/wordpress-coding-standards/) | Enforces WordPress Coding Standards (WPCS) when writing, reviewing, or refactoring WordPress PHP — plugins, themes, blocks, and anything in `wp-content/`. Rules are referenced from the [official WordPress Coding Standards](https://github.com/WordPress/WordPress-Coding-Standards). |
 
 ---
 
@@ -156,6 +156,10 @@ cp -r _agent-skills/skills/wordpress-coding-standards .claude/skills/wordpress-c
 ## Contributing
 
 Want to add a new skill or improve an existing one? See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Acknowledgements
+
+The `wordpress-coding-standards` skill is based on the rules and sniffs maintained by the WordPress community in the [WordPress Coding Standards](https://github.com/WordPress/WordPress-Coding-Standards) repository. All credit for the underlying standards goes to its contributors.
 
 ## License
 
